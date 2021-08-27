@@ -1,6 +1,6 @@
 
-import React,{Component ,useState,useEffect} from "react";
-import axios from "axios";
+import React from "react";
+
 const Context = React.createContext(); 
 
 export { Context };

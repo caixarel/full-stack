@@ -4,6 +4,7 @@ import React,{Component ,useState,useEffect} from "react";
 import axios from "axios";
 import CourseDetail from './components/CourseDetail'
 import CreateCourse from './components/CreateCourse'
+
 import {
   BrowserRouter as Router,
   Switch,
@@ -11,27 +12,25 @@ import {
   Link,
   Redirect
 } from "react-router-dom";
+import Courses from './components/Courses';
 
 function App({context}) {
-  const [data,setData] = useState([])
-
-useEffect(async ()=>{
-  await axios.get(`http://localhost:5000/api/courses`)
-      .then(response => {
-        setData(response.data)
-      })
-      .catch(error => {
-        console.log('Error fetching and parsing data', error);
-      });
-},[])
+ 
 
   return (
-    <CreateCourse />
-  //  <ul>
-  //   {data.map((element,index)=>{
-  //     return <li key={index}>{element.title}</li>
-  //   })}
-  //  </ul>
+    <Router>
+    <Switch>
+      <Route path='/api/courses/:id'>
+        <CourseDetail />
+      </Route>
+      <Route exact path='/api/courses'>
+        <Courses />
+      </Route>
+    </Switch>
+      
+      
+    </Router>
+    
   );
 }
 
