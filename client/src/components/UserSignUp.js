@@ -1,21 +1,26 @@
 import React from 'react'
+import {Link} from 'react-router-dom'
+
 function UserSignUp(){
+    function handleSubmit(e){
+        e.preventDefault();
+    }
     return (
-        <div class="form--centered">
+        <div className="form--centered">
                 <h2>Sign Up</h2>
                 
                 <form>
-                    <label for="firstName">First Name</label>
-                    <input id="firstName" name="firstName" type="text" value=""/>
-                    <label for="lastName">Last Name</label>
-                    <input id="lastName" name="lastName" type="text" value=""/>
-                    <label for="emailAddress">Email Address</label>
-                    <input id="emailAddress" name="emailAddress" type="email" value=""/>
-                    <label for="password">Password</label>
-                    <input id="password" name="password" type="password" value=""/>
-                    <button class="button" type="submit">Sign Up</button><button class="button button-secondary" onclick="event.preventDefault(); location.href='index.html';">Cancel</button>
+                    <label htmlFor="firstName">First Name</label>
+                    <input id="firstName" name="firstName" type="text" defaultValue=""/>
+                    <label htmlFor="lastName">Last Name</label>
+                    <input id="lastName" name="lastName" type="text" defaultValue=""/>
+                    <label htmlFor="emailAddress">Email Address</label>
+                    <input id="emailAddress" name="emailAddress" type="email" defaultValue=""/>
+                    <label htmlFor="password">Password</label>
+                    <input id="password" name="password" type="password" defaultValue=""/>
+                    <button className="button" type="submit" onClick={handleSubmit}>Sign Up</button><Link to='/courses' className="button button-secondary" >Cancel</Link>
                 </form>
-                <p>Already have a user account? Click here to <a href="sign-in.html">sign in</a>!</p>
+                <p>Already have a user account? Click here to <Link to='signin' >sign in</Link>!</p>
             </div>
     )
 

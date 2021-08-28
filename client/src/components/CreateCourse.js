@@ -1,6 +1,11 @@
 import React from 'react'
+import {Link} from 'react-router-dom'
 
 function CreateCourse(){
+
+    function handleSumit(e){
+        e.preventDefault();
+    }
     return(
         <div id="root">
             
@@ -32,6 +37,7 @@ function CreateCourse(){
                                 <textarea id="materialsNeeded" name="materialsNeeded"></textarea>
                             </div>
                         </div>
+                        <button className="button" type="submit" onClick={handleSumit}>Create Course</button><Link to='/courses' className="button button-secondary" >Cancel</Link>
                     </form>
                 </div>
             </main>
