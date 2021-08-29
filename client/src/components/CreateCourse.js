@@ -10,6 +10,7 @@ function CreateCourse(props){
     const [description,setDescription]=useState('');
     const [estimatedTime,setTime]=useState('');
     const [materialsNeeded,setMaterials]=useState('');
+    const [errors,setErrors]=useState([]);
 
     async function handleSumit (e){
         e.preventDefault();
@@ -24,24 +25,28 @@ function CreateCourse(props){
             props.history.push('/');
         }
         )
+        .catch(error => {
+            console.log( error.response.data.errors);
+            setErrors(error.response.data.errors);
+          });
     }
 
     function change(e){
         const name = e.target.name;
         const value = e.target.value;
-        if(name=="title"){
+        if(name==="title"){
             setTitle(value)
             console.log(value)
 
         }
-        else if(name=='description'){
+        else if(name==='description'){
             setDescription(value)
             console.log(value)
 
-        }else if(name=='estimatedTime'){
+        }else if(name==='estimatedTime'){
             console.log(value)
             setTime(value)
-        }else if(name=='materialsNeeded'){
+        }else if(name==='materialsNeeded'){
             console.log(value)
 
             setMaterials(value)
@@ -50,16 +55,25 @@ function CreateCourse(props){
     }
     return(
         <div id="root">
-            
             <main>
                 <div className='wrap'>
                     <h2>Create Course</h2>
                     <div className="validation--errors">
-                        <h3>Validation Errors</h3>
-                        <ul>
-                            <li>Please provide a value for "Title"</li>
-                            <li>Please provide a value for "Description"</li>
-                        </ul>
+                        {
+                            errors.length>0
+                            ?<><h3>Validation Errors</h3>
+                                <ul>
+                                    {(errors.map((error,index)=>{
+                                    return(
+                                        <li key={index}>{error}</li>
+                                    )
+                                }))}
+                                </ul>
+                            </>
+                            :null
+                        }
+                            {/* <li>Please provide a value for "Title"</li>
+                            <li>Please provide a value for "Description"</li> */}
                     </div>
                     <form onSubmit={handleSumit}>
                         <div className="main--flex">
@@ -79,7 +93,7 @@ function CreateCourse(props){
                                 <textarea id="materialsNeeded" name="materialsNeeded" onChange={change}></textarea>
                             </div>
                         </div>
-                        <button className="button" type="submit" >Create Course</button><Link to='/courses' className="button button-secondary" >Cancel</Link>
+                        <button className="button" type="submit" >Create Course</button><Link to='/' className="button button-secondary" >Cancel</Link>
                     </form>
                 </div>
             </main>

@@ -1,4 +1,4 @@
-import React,{useEffect,useContext} from 'react'
+import {useEffect,useContext} from 'react'
 import Context from '../Context';
 
 function UserSignOut(props){
@@ -7,7 +7,7 @@ function UserSignOut(props){
     useEffect(()=>{
         context.actions.signOut();
         props.history.push('/');
-    },[])
+    },[context.actions,props.history])
     return null;;
 
 }

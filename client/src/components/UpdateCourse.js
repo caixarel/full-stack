@@ -13,6 +13,8 @@ function UpdateCourse(props){
     const [estimatedTime,setTime]=useState('');
     const [materialsNeeded,setMaterials]=useState('');
     const [data,setData] = useState()
+    const [errors,setErrors]=useState([]);
+
     let {id} = useParams();
 
     useEffect( ()=>{
@@ -27,7 +29,7 @@ function UpdateCourse(props){
           .catch(error => {
             console.log('Error fetching and parsing data', error);
           });
-    },[])
+    },[id])
 
     async function handleSumit(e){
         e.preventDefault();
@@ -41,23 +43,26 @@ function UpdateCourse(props){
         .then(response=>{
             props.history.push('/');
         }
-        )
+        ).catch(error => {
+            console.log( error.response.data.errors);
+            setErrors(error.response.data.errors);
+          });
     }
     function change(e){
         const name = e.target.name;
         const value = e.target.value;
-        if(name=="title"){
+        if(name==="title"){
             setTitle(value)
             console.log(value)
         }
-        else if(name=='description'){
+        else if(name==='description'){
             setDescription(value)
             console.log(value)
 
-        }else if(name=='estimatedTime'){
+        }else if(name==='estimatedTime'){
             console.log(value)
             setTime(value)
-        }else if(name=='materialsNeeded'){
+        }else if(name==='materialsNeeded'){
             const material =value.split('\n');
             console.log(material);
             setMaterials(value)
@@ -71,15 +76,26 @@ function UpdateCourse(props){
             return(
                 <div className="wrap">
                     <h2>Update Course</h2>
+                    {
+                            errors.length>0
+                            ?<><div className="validation--errors">
+                                <h3>Validation Errors</h3>
+                                    <ul>
+                                        {(errors.map((error,index)=>{
+                                        return(
+                                            <li key={index}>{error}</li>
+                                        )
+                                    }))}
+                                    </ul>
+                                </div>
+                            </>
+                            :null
+                        }
                     <form>
                         <div className="main--flex">
                             <div>
                                 <label htmlFor="courseTitle">Course Title</label>
                                     <input id="courseTitle" name="title" type="text" defaultValue={data?.title} onChange={change}/>
- 
-
-                                <p>By Joe Smith</p>
-
                                 <label htmlFor="courseDescription">Course Description</label>
                     
                                     <textarea id="courseDescription" name="description" defaultValue={data?.description} onChange={change}></textarea>

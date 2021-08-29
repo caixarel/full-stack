@@ -16,7 +16,6 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Redirect
 } from "react-router-dom";
 import Courses from './components/Courses';
 
@@ -35,9 +34,7 @@ function App() {
               <PrivateRoute exact path='/courses/:id/update' component={UpdateCourse}/>
               <Route exact path='/courses/:id' component={CourseDetail}/>
               <Route exact path='/signin' component={UserSignIn}/>
-              <Route exact path='/signup'>
-                <UserSignUp />
-              </Route>
+              <Route exact path='/signup'component={UserSignUp}/>
               <Route exact path='/signout' component={UserSignOut}/>
             </Switch>
             

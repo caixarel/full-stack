@@ -36,7 +36,10 @@ export class Provider extends Component{
             auth: {
               password:password,
               username:emailaddress
-            }})
+            }}).catch(error => {
+                console.log( error.response.data.errors);
+                
+              });
             if(user){
                 console.log(`SUCCESS! ${user}  is now signed in!`);
                 this.setState(()=>{

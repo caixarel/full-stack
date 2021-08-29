@@ -7,7 +7,6 @@ function Header(){
     return(
         <Consumer>
             {context=>{
-                
                     return(
                         <header>
                         <div className="wrap header--flex">
