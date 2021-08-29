@@ -12,8 +12,8 @@ export class Provider extends Component{
         this.cookie = Cookies.get('authenticatedUser');
         this.state={
             authenticatedUser:this.cookie ? JSON.parse(this.cookie) : null,
-            username:'',
-            password:''
+            username:this.cookie ? JSON.parse(this.cookie).config.auth.username : null,
+            password:this.cookie ? JSON.parse(this.cookie).config.auth.password : null,
         }
     }
     render(){

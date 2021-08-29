@@ -14,7 +14,6 @@ function UserSignIn(props){
         context.actions.signIn(emailaddress,password)
         .then( user => {
             if(user === null) {
-
             }else{
                 props.history.push('/');
 
@@ -26,7 +25,6 @@ function UserSignIn(props){
     }
     function changePassword(e){
         setPassword(e.target.value);
-
     }
     return (
         <div className="form--centered">

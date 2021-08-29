@@ -9,13 +9,13 @@ import UserSignIn from './components/UserSignIn';
 import UserSignUp from './components/UserSignUp';
 import UserSignOut from './components/UserSignOut';
 import { Provider } from './Context';
+import PrivateRoute from './components/PrivateRoute';
 
 
 import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link,
   Redirect
 } from "react-router-dom";
 import Courses from './components/Courses';
@@ -31,15 +31,9 @@ function App() {
               <Route exact path='/'>
                 <Courses />
               </Route>
-              <Route exact path='/courses/create'>
-                <CreateCourse />
-              </Route>
-              <Route exact path='/courses/:id/update'>
-                <UpdateCourse />
-              </Route>
-              <Route exact path='/courses/:id'>
-                <CourseDetail />
-              </Route>
+              <PrivateRoute exact path='/courses/create' component={CreateCourse}/>
+              <PrivateRoute exact path='/courses/:id/update' component={UpdateCourse}/>
+              <Route exact path='/courses/:id' component={CourseDetail}/>
               <Route exact path='/signin' component={UserSignIn}/>
               <Route exact path='/signup'>
                 <UserSignUp />
