@@ -14,7 +14,7 @@ function UserSignUp(props){
 
 
 
-
+    //the form information will be sent to the server 'api' in order to create a new user
     async function handleSubmit(e){
         e.preventDefault();
         await axios.post(`http://localhost:5000/api/users`,{
@@ -25,34 +25,39 @@ function UserSignUp(props){
             props.history.push('/');
         }
         ).catch(error => {
-            console.log( error.response.data.errors);
-            setErrors(error.response.data.errors);
+            if(error.response.status===404){
+                props.history.push('/notfound');
+              }
+              else if(error.response.status===500){
+                props.history.push('/error');
+  
+              }else{
+                setErrors(error.response.data.errors);
+              }
           });
     }
 
-
+    //when the user writes on any of the form inputs or text area,that value will be stored on the
+    //respective variables
     function change(e){
         const name = e.target.name;
         const value = e.target.value;
         if(name==="firstName"){
             setFirstName(value)
-            console.log(value)
         }
         else if(name==='lastName'){
             setLastName(value)
-            console.log(value)
 
         }else if(name==='emailAddress'){
-            console.log(value)
             setEmailAddress(value)
         }else if(name==='password'){
-            console.log(value)
             setPassword(value)
         }
     }
     return (
         <div className="form--centered">
                 <h2>Sign Up</h2>
+                {/* Form errors will be shown here */}
                 {
                     errors.length>0
                     ?<><div className="validation--errors">

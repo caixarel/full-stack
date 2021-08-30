@@ -13,6 +13,7 @@ function Header(){
                             <h1 className="header--logo"><Link to="/">Courses</Link></h1>
                             <nav>
                                 <ul className="header--signedin">  
+                                    {/* if the user is logged in,his name will be shown on the header of the page,otherwise a link to the sign page is displayed */}
                                     {
                                         context.state.authenticatedUser
                                         ? (<>

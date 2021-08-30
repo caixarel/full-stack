@@ -17,7 +17,8 @@ router.get('/users',authenticateUser ,async (req,res)=>{
         res.json({
             firstName:user.firstName,
             lastName:user.lastName,
-            emailAddress:user.emailAddress
+            emailAddress:user.emailAddress,
+            id:currentUser.id
         }).status(200).end();
     }catch{
         res.status(400).end();
@@ -43,11 +44,12 @@ router.post('/users',async (req,res)=>{
  )
 //gets all the courses from the database
 router.get('/courses',async (req,res)=>{
+
      try{
         const courses = await Course.findAll({
             include:[{
                 model:User,attributes:["firstName","lastName","emailAddress"]
-            }],attributes:["title","description","estimatedTime","materialsNeeded"]
+            }],attributes:["title","description","estimatedTime","materialsNeeded","id"]
         });
         res.status(200).json(courses);
      }catch(err){
@@ -57,8 +59,12 @@ router.get('/courses',async (req,res)=>{
 
 //creates a new course
 router.post('/courses',authenticateUser, async (req,res)=>{
+    const user = req.currentUser;
+    let courseContent=req.body;
+    courseContent.userId=user.id
+    console.log(courseContent);
     try{
-        await Course.create(req.body);
+        await Course.create(courseContent);
         const courseId=await Course.findOne({order:[["createdAt","DESC"]]});
         res.location(`/courses/${courseId.id}`).status(201).end();
     }catch(err){
@@ -73,11 +79,14 @@ router.post('/courses',authenticateUser, async (req,res)=>{
 //Updates an existing course that belongs to the current user
 router.put('/courses/:id',authenticateUser, async (req,res)=>{
     const user = req.currentUser;
+    let courseContent=req.body;
+    courseContent.userId=user.id
+    console.log(courseContent)
         try{
-        const course= await Course.findByPk(req.params.id);
+            const course= await Course.findByPk(req.params.id);
     //if course belongs to current user
         if(user.id==course.userId && course){
-            await course.update(req.body);
+            await course.update(courseContent);
             res.location(`courses/${req.params.id}`).status(204).end();
         }else{
             res.status(403).json({ message:"acess denied" });   
@@ -85,9 +94,10 @@ router.put('/courses/:id',authenticateUser, async (req,res)=>{
     }catch(err){
         if (err.name === 'SequelizeValidationError' || err.name === 'SequelizeUniqueConstraintError') {
             const errors = err.errors.map(error => error.message);
+            console.log(errors)
             res.status(400).json({ errors });   
           } else {
-            res.status(500).end();
+            res.status(500).json({ err });
           }
         }
     })
@@ -115,7 +125,7 @@ router.delete('/courses/:id',authenticateUser, async (req,res)=>
     try{
        const course = await Course.findByPk(req.params.id,{
            include:[{
-               model:User,model:User,attributes:["firstName","lastName","emailAddress"]
+               model:User,model:User,attributes:["firstName","lastName","emailAddress",'id']
             }],attributes:["title","description","estimatedTime","materialsNeeded"]
        });
        if(course){

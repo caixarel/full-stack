@@ -1,28 +1,33 @@
 import React,{useState,useEffect} from "react";
 import {Link} from 'react-router-dom'
-
-
 import axios from "axios";
 
-
-function Courses(){
-
-  const [data,setData] = useState([])
+function Courses(props){
+    //variable containing the information about all courses
+    const [data,setData] = useState([])
 
     useEffect( ()=>{
+        //on the launch of the component all courses in the database will be stored on the data variables
          axios.get(`http://localhost:5000/api/courses`)
             .then(response => {
               setData(response.data)
             })
             .catch(error => {
-              console.log('Error fetching and parsing data', error);
+                 if(error.response.status===404){
+                    props.history.push('/notfound');
+                  }
+                  else if(error.response.status===500){
+                    props.history.push('/error');
+      
+                  }
             });
-      },[])
+      },[props.history])
 
     return(
         <div id="root">
             <main>
                 <div className="wrap main--grid">
+                {/* iteration over all the courses from the database and create a link to each of them */}
                 {data.map((element,index)=>{
                     return (
                         <Link to={`/courses/${element.id}`} className="course--module course--link"  key={index} >
@@ -31,10 +36,6 @@ function Courses(){
                         </Link>
                         )
                 })}
-
-
-                
-                
                     <Link to='/courses/create' className="course--module course--add--module" >
                         <span className="course--add--title">
                             <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"

@@ -3,17 +3,19 @@ import {Link} from 'react-router-dom'
 import axios from "axios";
 import Context from '../Context';
 
-
 function CreateCourse(props){
     const context =useContext(Context)
+    //variables to store the new course information
     const [title,setTitle]=useState('');
     const [description,setDescription]=useState('');
     const [estimatedTime,setTime]=useState('');
     const [materialsNeeded,setMaterials]=useState('');
+    //storing possible errors when filling the course form
     const [errors,setErrors]=useState([]);
 
     async function handleSumit (e){
         e.preventDefault();
+        //create new course 
         await axios.post('http://localhost:5000/api/courses',{
             title,description,estimatedTime,materialsNeeded
         },{
@@ -26,29 +28,32 @@ function CreateCourse(props){
         }
         )
         .catch(error => {
-            console.log( error.response.data.errors);
-            setErrors(error.response.data.errors);
+            if(error.response.status===400){
+                 setErrors(error.response.data.errors);
+            }
+            else if(error.response.status===404){
+                props.history.push('/notfound');
+              }
+              else if(error.response.status===500){
+                props.history.push('/error');
+  
+              }
           });
     }
-
+    //when the user writes on any of the form inputs or text area,that value will be stored on the
+    //respective variables
     function change(e){
         const name = e.target.name;
         const value = e.target.value;
         if(name==="title"){
             setTitle(value)
-            console.log(value)
-
         }
         else if(name==='description'){
             setDescription(value)
-            console.log(value)
 
         }else if(name==='estimatedTime'){
-            console.log(value)
             setTime(value)
         }else if(name==='materialsNeeded'){
-            console.log(value)
-
             setMaterials(value)
         }
 
@@ -58,23 +63,21 @@ function CreateCourse(props){
             <main>
                 <div className='wrap'>
                     <h2>Create Course</h2>
-                    <div className="validation--errors">
+                    {/* Form errors will be shown here */}
                         {
                             errors.length>0
-                            ?<><h3>Validation Errors</h3>
+                            ?<><div className="validation--errors">
+                            <h3>Validation Errors</h3>
                                 <ul>
                                     {(errors.map((error,index)=>{
                                     return(
                                         <li key={index}>{error}</li>
                                     )
                                 }))}
-                                </ul>
+                                </ul></div>
                             </>
                             :null
                         }
-                            {/* <li>Please provide a value for "Title"</li>
-                            <li>Please provide a value for "Description"</li> */}
-                    </div>
                     <form onSubmit={handleSumit}>
                         <div className="main--flex">
                             <div>
@@ -88,7 +91,6 @@ function CreateCourse(props){
                             <div>
                                 <label htmlFor="estimatedTime">Estimated Time</label>
                                 <input id="estimatedTime" name="estimatedTime" type="text" defaultValue=""onChange={change}/>
-
                                 <label htmlFor="materialsNeeded">Materials Needed</label>
                                 <textarea id="materialsNeeded" name="materialsNeeded" onChange={change}></textarea>
                             </div>

@@ -4,32 +4,34 @@ import Context from '../Context';
 
 
 function UserSignIn(props){
+    //variables containing the login information
     const [password,setPassword]=useState('');
     const [emailaddress,setEmailAddress]=useState('');
+
     const context =useContext(Context)
     const [errors,setErrors]=useState([]);
-
-
-
+    //when the form is submit the login information will be sent to the server'api' to check if there is a user with the matching credentials
     function handleSubmit(e){
         e.preventDefault();
+        const { from } = props.location.state || { from: { pathname: '/' } };
         context.actions.signIn(emailaddress,password)
         .then( user => {
-            console.log(user)
             if (user) {
-                props.history.push('/');
-                console.log(`SUCCESS! is now signed in!`);
+                //if the user is succesfully loged in he 
+                //will be redirected to the main page or to the page he was trying to acess
+                props.history.push(from);
             }else{
               setErrors('The username or password are not correct')
             }
           })
-          .catch( err => {
-            console.log(err);
-            props.history.push('/error');
-          })
-        
-          
-
+          .catch( error => {
+            if(error.response.status===404){
+                props.history.push('/notfound');
+              }
+              else if(error.response.status===500){
+                props.history.push('/error');
+              }
+          })        
     }
     function changeEmail(e){
         setEmailAddress(e.target.value)
@@ -40,6 +42,7 @@ function UserSignIn(props){
     return (
         <div className="form--centered">
                 <h2>Sign In</h2>
+                {/* Form errors will be shown here */}
                 {
                         errors.length>0
                         ?<><div className="validation--errors">
